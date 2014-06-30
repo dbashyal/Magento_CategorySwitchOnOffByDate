@@ -30,8 +30,7 @@ class Technooze_Tcategorystatus_Model_Cron
     {
         $this->_fromDate    = Technooze_Tcategorystatus_Model_Tcategorystatus::TCATEGORY_STATUS_ACTIVE_FROM_CODE;
         $this->_toDate      = Technooze_Tcategorystatus_Model_Tcategorystatus::TCATEGORY_STATUS_ACTIVE_TO_CODE;
-        $timestamp          = Mage::getModel('core/date')->timestamp(time());
-        $this->_today       = date('Y-m-d', $timestamp);
+        $this->_today       = Mage::helper('tcategorystatus')->getDateToday();
 
         // first enable new categories that meet date requirements
         $this->enableNewCategories();

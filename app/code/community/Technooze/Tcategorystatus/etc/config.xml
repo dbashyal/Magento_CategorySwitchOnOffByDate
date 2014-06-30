@@ -25,10 +25,15 @@
 <config>
     <modules>
         <Technooze_Tcategorystatus>
-            <version>0.0.1</version>
+            <version>0.0.2</version>
         </Technooze_Tcategorystatus>
     </modules>
     <global>
+        <helpers>
+            <tcategorystatus>
+                <class>Technooze_Tcategorystatus_Helper</class>
+            </tcategorystatus>
+        </helpers>
         <models>
             <tcategorystatus>
                 <class>Technooze_Tcategorystatus_Model</class>
@@ -43,6 +48,39 @@
             </tcategorystatus_setup>
         </resources>
     </global>
+    <frontend>
+        <routers>
+            <checkout>
+                <args>
+                    <modules>
+                        <technooze_tcategorystatus before="Mage_Checkout_CartController">
+                            Technooze_Tcategorystatus_CartController
+                        </technooze_tcategorystatus>
+                    </modules>
+                </args>
+            </checkout>
+        </routers>
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <add_event>
+                        <type>singleton</type>
+                        <class>tcategorystatus/observer</class>
+                        <method>addEvent</method>
+                    </add_event>
+                </observers>
+            </controller_action_predispatch>
+            <checkout_cart_product_add_before>
+                <observers>
+                    <add_to_cart_before>
+                        <type>singleton</type>
+                        <class>tcategorystatus/observer</class>
+                        <method>addToCartBefore</method>
+                    </add_to_cart_before>
+                </observers>
+            </checkout_cart_product_add_before>
+        </events>
+    </frontend>
     <crontab>
         <jobs>
             <change_category_status>
