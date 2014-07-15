@@ -22,8 +22,14 @@
  */
 class Technooze_Tcategorystatus_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    /**
+     * @var string
+     */
     private $_today;
 
+    /**
+     * @return string
+     */
     public function getDateToday()
     {
         if(empty($this->_today)){
@@ -31,5 +37,14 @@ class Technooze_Tcategorystatus_Helper_Data extends Mage_Core_Helper_Abstract
             $this->_today   = date('Y-m-d', $timestamp);
         }
         return $this->_today;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLoggedIn(){
+        /* @var $session Mage_Customer_Model_Session */
+        $session = Mage::getSingleton('customer/session');
+        return $session->isLoggedIn();
     }
 }

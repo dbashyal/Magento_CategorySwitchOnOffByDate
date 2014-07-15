@@ -36,17 +36,4 @@ class Technooze_Tcategorystatus_Model_Tcategorystatus extends Mage_Core_Model_Ab
         parent::_construct();
         $this->_init('tcategorystatus/tcategorystatus');
     }
-
-    public function getProduct($productId=0)
-    {
-        if ($productId) {
-            $product = Mage::getModel('catalog/product')
-                ->setStoreId(Mage::app()->getStore()->getId())
-                ->load($productId);
-            if ($product->getId()) {
-                return $product;
-            }
-        }
-        return false;
-    }
 }

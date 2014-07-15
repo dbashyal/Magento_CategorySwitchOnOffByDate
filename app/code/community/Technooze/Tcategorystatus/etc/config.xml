@@ -25,7 +25,7 @@
 <config>
     <modules>
         <Technooze_Tcategorystatus>
-            <version>0.0.2</version>
+            <version>0.0.3</version>
         </Technooze_Tcategorystatus>
     </modules>
     <global>

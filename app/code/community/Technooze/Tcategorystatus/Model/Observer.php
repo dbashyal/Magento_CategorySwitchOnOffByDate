@@ -33,55 +33,39 @@ class Technooze_Tcategorystatus_Model_Observer
     }
 
     public function addToCartBefore(Varien_Event_Observer $observer){
-        $productId = $observer->getEvent()->getProduct();
-        $request = $observer->getEvent()->getRequest();
+        $productId  = $observer->getEvent()->getProduct();
+        $request    = $observer->getEvent()->getRequest();
+        /* @var $model Technooze_Tcategorystatus_Model_Checkout */
+        $model      = Mage::getModel('tcategorystatus/checkout');
 
-        // let's check if product info is supplied, if not try to retrieve it.
-        if(!$productId && isset($request['product'])){
-            $productId = (int)$request['product'];
-        }
+        $product = $model->getProduct($productId, $request);
+        if($product){
+            $categories = $model->getProductCategories($productId);
+            // check to see if user is logged in
+            $model->checkConditionIsLoggedIn();
 
-        // check if supplied product is object, then get ID only
-        if(is_object($productId)){
-            $productId = $productId->getId();
-        }
+            if(count($categories)){
+                $model->isAllowedToPlaceOrder($categories, array(
+                    // check to see if cut off date is active
+                    // deprecated.
+                    // Technooze_Tcategorystatus_Model_Tcategorystatus::TCATEGORY_STATUS_ORDER_CUTOFF_CODE,
 
-        $product = Mage::getModel('tcategorystatus/tcategorystatus')->getProduct($productId);
+                    // check to see if user is logged in
+                    // this condition should be checked even if product is not assigned to any categories
+                    // so moved this above separately
+                    //'is_logged_in',
 
-        if(!$product){
-            Mage::throwException(Mage::helper('checkout')->__('The product does not exist.'));
-        }
+                    // check if one of the category associated is active or not
+                    // disallow for products from inactive categories.
+                    'category_status',
 
-        $categories = $product->getCategoryIds();
-        $categories = array_combine($categories, $categories);
-
-        // if the product is not assigned to any categories,
-        // then we don't need to go further
-        if(!count($categories)){
-            return;
-        }
-
-        $collection = Mage::getModel('catalog/category')->getCollection();
-        $collection->addAttributeToFilter('entity_id', array('in' => $categories));
-
-        foreach($collection as $category){
-            $path = substr($category->getPath(), (strpos($category->getPath(), '/', 2) + 1));
-            $cats = explode('/', $path);
-            foreach($cats as $cat){
-                $categories[$cat] = $cat;
+                    // check if this product's category has group access date defined
+                    // if so, allow to permitted group only.
+                    'group_permission',
+                  )
+                );
             }
         }
-        $collection = Mage::getModel('catalog/category')->getCollection();
-        $collection->addAttributeToFilter('entity_id', array('in' => $categories));
-        $collection->addAttributeToFilter(Technooze_Tcategorystatus_Model_Tcategorystatus::TCATEGORY_STATUS_ORDER_CUTOFF_CODE, array('lt' => Mage::helper('tcategorystatus')->getDateToday()));
-
-        // if this product belongs to any category that is set to cut off,
-        // then do not allow adding product to cart
-        if($collection->count()){
-            if(Mage::getSingleton("customer/session")->isLoggedIn()){
-                Mage::throwException(Mage::helper('checkout')->__('This is restricted product. Please login to retry.'));
-            }
-            Mage::throwException(Mage::helper('checkout')->__('This product is currently not on sale.'));
-        }
+        return $this;
     }
 }

@@ -25,17 +25,13 @@
 $installer = $this;
 $installer->startSetup();
 
-/*delete order's previous cut off date attribute*/
+/*remove cut off date attribute: no longer using*/
 $installer->deleteTableRow('eav/attribute', 'attribute_code', Technooze_Tcategorystatus_Model_Tcategorystatus::TCATEGORY_STATUS_ORDER_CUTOFF_CODE);
 
-/*
+/* or,
+ * $installer->removeAttribute('catalog_category',Technooze_Tcategorystatus_Model_Tcategorystatus::TCATEGORY_STATUS_ORDER_CUTOFF_CODE);
  * or, run this manually
 DELETE FROM `eav_attribute` WHERE attribute_code = 'order_cut_off_date';
  */
-
-$installer->addActiveDateAttribute('catalog_category', Technooze_Tcategorystatus_Model_Tcategorystatus::TCATEGORY_STATUS_ORDER_CUTOFF_CODE, array(
-    'label' => Technooze_Tcategorystatus_Model_Tcategorystatus::TCATEGORY_STATUS_ORDER_CUTOFF_LABEL,
-    'sort_order'    => 997,
-));
 
 $installer->endSetup();

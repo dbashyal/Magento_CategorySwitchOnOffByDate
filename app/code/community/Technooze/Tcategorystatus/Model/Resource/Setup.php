@@ -26,7 +26,7 @@ class Technooze_Tcategorystatus_Model_Resource_Setup extends Mage_Catalog_Model_
     {
         $default = array(
                     'label' => 'Active From',
-                    'group' => 'General Information',
+                    'group' => 'Category Status',
                     'type' => 'datetime',
                     'input' => 'date',
                     'backend' => 'eav/entity_attribute_backend_datetime',
